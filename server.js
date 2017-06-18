@@ -31,4 +31,20 @@ io.on('connection', function (socket) {
     socket.broadcast.emit('transfer finished', data)
   });
 
+  socket.on('begin streaming', function (data) {
+    socket.emit('start streaming', data)
+    socket.broadcast.emit('start streaming', data)
+  });
+
+  socket.on('processing streaming', function (val) {
+    console.log(val.length)
+    socket.emit('display streaming', val)
+    socket.broadcast.emit('display streaming', val)
+  });
+
+  socket.on('end streaming', function (data) {
+    socket.emit('stop streaming', data)
+    socket.broadcast.emit('transfer streaming', data)
+  });
+
 });
