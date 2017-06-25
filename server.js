@@ -114,6 +114,8 @@ io.on('connection', function (iosocket) {
       }
     });
   });
+  sendFileTransferRequests();
+
   // socket.emit('news', { hello: 'world' });
   // socket.on('file transfer', function (data) {
   //   socket.broadcast.emit('news', { hello: 'world' })
@@ -154,5 +156,3 @@ io.on('connection', function (iosocket) {
 });
 
 app.listen(8080);
-
-sendFileTransferRequests();
