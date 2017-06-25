@@ -106,7 +106,7 @@ io.on('connection', function (iosocket) {
     iosocket.emit("server ready", port);
   });
   iosocket.on("transfer finished", function (transferId) {
-    TransferModel.update({_id: this.transfer._id}, {status: 'success'}, function (err) {
+    TransferModel.update({_id: transferId}, {status: 'success'}, function (err) {
       if (!err) {
         console.log("updated successfully")
       } else {
