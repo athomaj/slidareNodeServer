@@ -26,7 +26,7 @@ function handler (req, res) {
 }
 
 function sendFileTransferRequests(iosocket) {
-  TransferModel.find({status: 'pending'}, function (err, transfers) {
+  TransferModel.find({status: 'failed'}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
       iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
@@ -154,3 +154,5 @@ io.on('connection', function (iosocket) {
 });
 
 app.listen(8080);
+
+sendFileTransferRequests();
