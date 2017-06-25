@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var uuid = require('node-uuid');
 var port = 8000;
 
-mongoose.connect('mongodb://localhost/slidare');
+mongoose.connect('mongodb://localhost:27018/slidare');
 
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
@@ -16,7 +16,7 @@ var TransferSchema = new Schema({
   originalFileName: String,
   storedFileName: String,
   recipientId: String,
-  status: String,
+  status: String, //pending, failed, success
   date: { type: Date, default: Date.now },
 });
 
@@ -26,10 +26,10 @@ function handler (req, res) {
 }
 
 function sendFileTransferRequests(iosocket) {
-  TransferModel.find({}, function (err, transfers) {
+  TransferModel.find({status: 'pending'}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
-      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port);
+      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
         console.log(this)
         var fileStream = fs.createReadStream('./' + this.transfer.storedFileName);
@@ -43,6 +43,13 @@ function sendFileTransferRequests(iosocket) {
         });
         socket.on('close', function(data) {
           console.log('done');
+          TransferModel.update({_id: this.transfer._id}, {status: 'failed'}, function (err) {
+            if (!err) {
+              console.log("updated successfully")
+            } else {
+              console.log("update failed");
+            }
+          });
           server.close(function () {
               console.log('server closed.');
               server.unref();
@@ -96,6 +103,15 @@ io.on('connection', function (iosocket) {
     });
     server.listen(++port);
     iosocket.emit("server ready", port);
+  });
+  iosocket.on("transfer finished", function (transferId) {
+    TransferModel.update({_id: this.transfer._id}, {status: 'success'}, function (err) {
+      if (!err) {
+        console.log("updated successfully")
+      } else {
+        console.log("update failed");
+      }
+    });
   });
   // socket.emit('news', { hello: 'world' });
   // socket.on('file transfer', function (data) {
