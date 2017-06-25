@@ -32,7 +32,8 @@ function sendFileTransferRequests(iosocket) {
       iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
         console.log(this)
-        var fileStream = fs.createReadStream('./' + this.transfer.storedFileName);
+        const transfer = this.transfer;
+        var fileStream = fs.createReadStream('./' + transfer.storedFileName);
         fileStream.on('error', function(err){
             console.log(err);
         })
@@ -43,7 +44,7 @@ function sendFileTransferRequests(iosocket) {
         });
         socket.on('close', function(data) {
           console.log('done');
-          TransferModel.update({_id: this.transfer._id}, {status: 'failed'}, function (err) {
+          TransferModel.update({_id: transfer._id}, {status: 'failed'}, function (err) {
             if (!err) {
               console.log("updated successfully")
             } else {
