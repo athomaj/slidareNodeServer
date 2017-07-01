@@ -20,8 +20,8 @@ var TransferSchema = new Schema({
   date: { type: Date, default: Date.now },
   fileEncryptedName: String,
   filesha1: String,
-  filesalt: String,
-  fileiv: String,
+  filesalt: Buffer,
+  fileiv: Buffer,
   filekey: String,
 });
 var TransferModel = mongoose.model('TransferModel', TransferSchema);
