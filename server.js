@@ -25,7 +25,7 @@ var TransferModel = mongoose.model('TransferModel', TransferSchema);
 function handler (req, res) {
 }
 
-function sendFileTransferRequests(storedFileName) {
+function sendFileTransferRequests(iosocket, storedFileName) {
   TransferModel.find({storedFileName: storedFileName}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
@@ -95,7 +95,7 @@ io.on('connection', function (iosocket) {
       });
       socket.on('close', function(data) {
         console.log('done');
-        sendFileTransferRequests(storedFileName);
+        sendFileTransferRequests(iosocket, storedFileName);
         server.close(function () {
             console.log('server closed.');
             server.unref();
