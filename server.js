@@ -29,7 +29,7 @@ function sendFileTransferRequests(iosocket) {
   TransferModel.find({status: 'pending'}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
-      iosocket.broadcast(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
+      iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
         console.log(this)
         const transfer = this.transfer;
