@@ -69,6 +69,7 @@ function sendFileTransferRequests(iosocket) {
 }
 
 io.on('connection', function (iosocket) {
+  console.log("connection");
   iosocket.on('request file transfer', function(fileName, filePath, recipientIds) {
     var server = net.createServer(function(socket) {
       console.log("server created");
