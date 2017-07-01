@@ -30,6 +30,8 @@ function sendFileTransferRequests(iosocket) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
       iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
+//      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
+//      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
         console.log(this)
         const transfer = this.transfer;
@@ -44,13 +46,13 @@ function sendFileTransferRequests(iosocket) {
         });
         socket.on('close', function(data) {
           console.log('done');
-          TransferModel.update({_id: transfer._id}, {status: 'failed'}, function (err) {
-            if (!err) {
-              console.log("updated successfully")
-            } else {
-              console.log("update failed");
-            }
-          });
+          // TransferModel.update({_id: transfer._id}, {status: 'failed'}, function (err) {
+          //   if (!err) {
+          //     console.log("updated successfully")
+          //   } else {
+          //     console.log("update failed");
+          //   }
+          // });
           server.close(function () {
               console.log('server closed.');
               server.unref();
@@ -67,7 +69,7 @@ function sendFileTransferRequests(iosocket) {
 }
 
 io.on('connection', function (iosocket) {
-  iosocket.on('request file transfer', function(fileName, recipientIds) {
+  iosocket.on('request file transfer', function(fileName, filePath, recipientIds) {
     var server = net.createServer(function(socket) {
       console.log("server created");
       var storedFileName = uuid.v4();
@@ -103,7 +105,7 @@ io.on('connection', function (iosocket) {
       });
     });
     server.listen(++port);
-    iosocket.emit("server ready", port);
+    iosocket.emit("server ready", port, filePath);
   });
   iosocket.on("transfer finished", function (transferId) {
     TransferModel.update({_id: transferId}, {status: 'success'}, function (err) {
