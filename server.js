@@ -18,8 +18,12 @@ var TransferSchema = new Schema({
   recipientId: String,
   status: String, //pending, failed, success
   date: { type: Date, default: Date.now },
+  fileEncryptedName: String,
+  filesha1: String,
+  filesalt: String,
+  fileiv: String,
+  filekey: String,
 });
-
 var TransferModel = mongoose.model('TransferModel', TransferSchema);
 
 function handler (req, res) {
@@ -29,7 +33,7 @@ function sendFileTransferRequests(iosocket, storedFileName) {
   TransferModel.find({storedFileName: storedFileName}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
-      iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
+      iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id, transfers[i].fileEncryptedName, transfers[i].originalFileName, transfers[i].filesha1, transfers[i].filesalt, transfers[i].fileiv, transfers[i].filekey);
 //      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
 //      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
@@ -70,7 +74,7 @@ function sendFileTransferRequests(iosocket, storedFileName) {
 
 io.on('connection', function (iosocket) {
   console.log("connection");
-  iosocket.on('request file transfer', function(fileName, filePath, recipientIds) {
+  iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey) {
     var server = net.createServer(function(socket) {
       console.log("server created");
       var storedFileName = uuid.v4();
@@ -80,6 +84,11 @@ io.on('connection', function (iosocket) {
         instance.originalFileName = fileName;
         instance.storedFileName = storedFileName;
         instance.recipientId = recipientIds[i];
+        instance.fileEncryptedName = fileEncryptedName;
+        instance.filesha1 = filesha1;
+        instance.filesalt = filesalt;
+        instance.fileiv = fileiv;
+        instance.filekey = filekey;
         instance.status = "pending";
         instance.save(function (err) {
           console.log(err);
