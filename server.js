@@ -89,8 +89,8 @@ io.on('connection', function (iosocket) {
       stream.once('open', function(fd) {
       });
       socket.on('data', function (data) {
-        console.log("receiving data");
-        console.log(data.toString().length);
+        // console.log("receiving data");
+        // console.log(data.toString().length);
         stream.write(data);
       });
       socket.on('close', function(data) {
