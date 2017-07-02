@@ -123,7 +123,7 @@ io.on('connection', function (iosocket) {
       });
     });
     server.listen(++port);
-    iosocket.emit("server ready", port, './encrypted');
+    iosocket.emit("server ready", port, fileEncryptedName);
   });
   iosocket.on("transfer finished", function (transferId) {
     TransferModel.update({_id: transferId}, {status: 'success'}, function (err) {
