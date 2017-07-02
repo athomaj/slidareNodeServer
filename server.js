@@ -79,6 +79,7 @@ io.on('connection', function (iosocket) {
     console.log(filesize)
     var server = net.createServer(function(socket) {
       console.log("server created");
+      var nbDataReceived = 0;
       var storedFileName = uuid.v4();
       for (var i=0; i < recipientIds.length; ++i) {
         var instance = new TransferModel();
@@ -101,6 +102,9 @@ io.on('connection', function (iosocket) {
       stream.once('open', function(fd) {
       });
       socket.on('data', function (data) {
+        nbDataReceived += data.toString().length;
+
+        iosocket.emit("receiving data", "Percentace: " + (nbDataReceived / filesize * 100.0) + "%");
         // console.log("receiving data");
         // console.log(data.toString().length);
         stream.write(data);
