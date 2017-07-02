@@ -23,6 +23,7 @@ var TransferSchema = new Schema({
   filesalt: String,
   fileiv: String,
   filekey: String,
+  filesize: Number
 });
 var TransferModel = mongoose.model('TransferModel', TransferSchema);
 
@@ -74,7 +75,8 @@ function sendFileTransferRequests(iosocket, storedFileName) {
 
 io.on('connection', function (iosocket) {
   console.log("connection");
-  iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey) {
+  iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey, filesize) {
+    console.log(filesize)
     var server = net.createServer(function(socket) {
       console.log("server created");
       var storedFileName = uuid.v4();
@@ -89,6 +91,7 @@ io.on('connection', function (iosocket) {
         instance.filesalt = filesalt;
         instance.fileiv = fileiv;
         instance.filekey = filekey;
+        instance.filesize = filesize;
         instance.status = "pending";
         instance.save(function (err) {
           console.log(err);
