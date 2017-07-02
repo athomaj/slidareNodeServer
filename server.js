@@ -102,7 +102,7 @@ io.on('connection', function (iosocket) {
       stream.once('open', function(fd) {
       });
       socket.on('data', function (data) {
-        nbDataReceived += data.toString().length;
+        nbDataReceived += data.length;
         console.log(nbDataReceived + " " + filesize);
         iosocket.emit("receiving data", "Percentace: " + (nbDataReceived / filesize * 100.0) + "%", nbDataReceived == filesize);
         // console.log("receiving data");
