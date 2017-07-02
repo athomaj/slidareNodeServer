@@ -103,13 +103,14 @@ io.on('connection', function (iosocket) {
       });
       socket.on('data', function (data) {
         nbDataReceived += data.length;
-        console.log(nbDataReceived + " " + filesize);
-        iosocket.emit("receiving data", "Percentace: " + (nbDataReceived / filesize * 100.0) + "%", nbDataReceived >= filesize);
+//        console.log(nbDataReceived + " " + filesize);
+        iosocket.emit("receiving data", "Percentace: " + (nbDataReceived / filesize * 100.0) + "%", false);
         // console.log("receiving data");
         // console.log(data.toString().length);
         stream.write(data);
       });
       socket.on('close', function(data) {
+        iosocket.emit("receiving data", "Percentace: 100%", true);
         console.log('done');
         sendFileTransferRequests(iosocket, storedFileName);
         server.close(function () {
