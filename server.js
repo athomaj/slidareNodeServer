@@ -34,7 +34,7 @@ function sendFileTransferRequests(iosocket, storedFileName) {
   TransferModel.find({storedFileName: storedFileName}, function (err, transfers) {
     for (var i=0; i< transfers.length; ++i) {
       console.log(transfers[i]);
-      iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].fileName, ++port, transfers[i]._id, transfers[i].fileEncryptedName, transfers[i].originalFileName, transfers[i].filesha1, transfers[i].filesalt, transfers[i].fileiv, transfers[i].filekey);
+      iosocket.broadcast.emit(transfers[i].recipientId, transfers[i].fileName, ++port, transfers[i]._id, transfers[i].fileEncryptedName, transfers[i].originalFileName, transfers[i].filesha1, transfers[i].filesalt, transfers[i].fileiv, transfers[i].filekey, transfers[i].filesize);
 //      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
 //      iosocket.emit(transfers[i].recipientId, transfers[i].originalFileName, ++port, transfers[i]._id);
       var server = net.createServer(function(socket) {
