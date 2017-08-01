@@ -5,6 +5,7 @@ var net = require('net');
 var mongoose = require('mongoose');
 var uuid = require('node-uuid');
 var port = 8100;
+var streamingIdx = 0;
 
 mongoose.connect('mongodb://localhost:27018/slidare');
 
@@ -134,6 +135,12 @@ io.on('connection', function (iosocket, toto, titi, tata) {
       }
     });
   });
+  iosocket.on("init streaming", function (username) {
+    streamingIdx = (streamingIdx == 10 ? 0 : streamingIdx + 1);
+    iosocket.broadcast.emit(username + " streaming", "http://34.227.142.101:8080/streaming" + (streamingIdx == 0 ? "" : streamingIdx));
+    iosocket.emit("start streaming", "rtmp://34.227.142.101:1935/myapp/test" + (streamingIdx == 0 ? "" : streamingIdx));
+  });
+
 //  sendFileTransferRequests(iosocket);
 
   // socket.emit('news', { hello: 'world' });
