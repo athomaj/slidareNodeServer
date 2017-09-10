@@ -58,10 +58,10 @@ function sendFileTransferRequests(iosocket, storedFileName) {
           //     console.log("update failed");
           //   }
           // });
-          server.close(function () {
-              console.log('server closed.');
-              server.unref();
-          });
+          // server.close(function () {
+          //     console.log('server closed.');
+          //     server.unref();
+          // });
         });
         socket.on('error', function (err) {
           console.log(err);
@@ -73,7 +73,7 @@ function sendFileTransferRequests(iosocket, storedFileName) {
   });
 }
 
-io.on('connection', function (iosocket) {
+io.on('connection', function (iosocket, toto, titi, tata) {
   console.log("connection");
   iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey, filesize) {
     console.log(filesize)
