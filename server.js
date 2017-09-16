@@ -80,7 +80,7 @@ io.on('connection', function (iosocket, toto, titi, tata) {
     var server = net.createServer(function(socket) {
       console.log("server created");
       var nbDataReceived = 0;
-      var storedFileName = uuid.v4();
+      var storedFileName = 'files/' + uuid.v4();
       for (var i=0; i < recipientIds.length; ++i) {
         var instance = new TransferModel();
         instance.userId = 'julien@athomas.io';
@@ -175,4 +175,4 @@ io.on('connection', function (iosocket, toto, titi, tata) {
 
 });
 
-app.listen(8080);
+app.listen(8090);
