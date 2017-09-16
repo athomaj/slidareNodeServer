@@ -4,7 +4,7 @@ var fs = require('fs');
 var net = require('net');
 var mongoose = require('mongoose');
 var uuid = require('node-uuid');
-var port = 8000;
+var port = 8100;
 
 mongoose.connect('mongodb://localhost:27018/slidare');
 
