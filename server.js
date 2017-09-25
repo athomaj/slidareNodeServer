@@ -142,7 +142,9 @@ io.on('connection', function (iosocket, toto, titi, tata) {
     iosocket.emit("start streaming", "rtmp://34.227.142.101:1935/myapp/test" + (streamingIdx == 0 ? "" : streamingIdx));
   });
   iosocket.on("send streaming", function (link, users) {
+    console.log(users);
     for (var i = 0; i < users.length; i++) {
+      console.log(users[i]);
       iosocket.broadcast.emit(users[i] + "streaming", link);
     }
   });
