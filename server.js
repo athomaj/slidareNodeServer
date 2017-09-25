@@ -135,11 +135,16 @@ io.on('connection', function (iosocket, toto, titi, tata) {
       }
     });
   });
-  iosocket.on("init streaming", function (username) {
+  iosocket.on("init streaming", function () {
     streamingIdx = (streamingIdx == 10 ? 0 : streamingIdx + 1);
-    console.log(username + "streaming");
-    iosocket.broadcast.emit(username + "streaming", "http://34.227.142.101:8080/streaming" + (streamingIdx == 0 ? "" : streamingIdx));
+    // console.log(username + "streaming");
+    // iosocket.broadcast.emit(username + "streaming", "http://34.227.142.101:8080/streaming" + (streamingIdx == 0 ? "" : streamingIdx));
     iosocket.emit("start streaming", "rtmp://34.227.142.101:1935/myapp/test" + (streamingIdx == 0 ? "" : streamingIdx));
+  });
+  iosocket.on("send streaming", function (link, users) {
+    for (var i = 0; i < users.length; i++) {
+      iosocket.broadcast.emit(users[i] + "streaming", link);
+    }
   });
 
 //  sendFileTransferRequests(iosocket);
