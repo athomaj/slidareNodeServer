@@ -7,7 +7,7 @@ var uuid = require('node-uuid');
 var port = 8100;
 var streamingIdx = 0;
 
-mongoose.connect('mongodb://localhost:27018/slidare');
+mongoose.connect('mongodb://localhost:27017/slidare');
 
 var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
@@ -76,7 +76,7 @@ function sendFileTransferRequests(iosocket, storedFileName) {
 
 io.on('connection', function (iosocket, toto, titi, tata) {
   console.log("connection");
-  iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey, filesize) {
+  iosocket.on('request file transfer', function(fileName, filePath, recipientIds, fileEncryptedName, fileName2, filesha1, filesalt, fileiv, filekey, filesize, fileSender) {
     console.log(filesize)
     var server = net.createServer(function(socket) {
       console.log("server created");
@@ -84,7 +84,7 @@ io.on('connection', function (iosocket, toto, titi, tata) {
       var storedFileName = 'files/' + uuid.v4();
       for (var i=0; i < recipientIds.length; ++i) {
         var instance = new TransferModel();
-        instance.userId = 'julien@athomas.io';
+        instance.userId = fileSender || "Unknown";
         instance.originalFileName = fileName;
         instance.storedFileName = storedFileName;
         instance.recipientId = recipientIds[i];
@@ -148,46 +148,6 @@ io.on('connection', function (iosocket, toto, titi, tata) {
       iosocket.broadcast.emit(users[i] + "streaming", link);
     }
   });
-
-//  sendFileTransferRequests(iosocket);
-
-  // socket.emit('news', { hello: 'world' });
-  // socket.on('file transfer', function (data) {
-  //   socket.broadcast.emit('news', { hello: 'world' })
-  //   console.log(data);
-  // });
-  //
-  // socket.on('begin transfer', function (data) {
-  //   socket.emit('create file', data)
-  //   socket.broadcast.emit('create file', data)
-  // });
-  //
-  // socket.on('processing transfer', function (val, size) {
-  //   socket.emit('write file', val, size)
-  //   socket.broadcast.emit('write file', val, size)
-  // });
-  //
-  // socket.on('end transfer', function (data) {
-  //   socket.emit('transfer finished', data)
-  //   socket.broadcast.emit('transfer finished', data)
-  // });
-  //
-  // socket.on('begin streaming', function (data) {
-  //   socket.emit('start streaming', data)
-  //   socket.broadcast.emit('start streaming', data)
-  // });
-  //
-  // socket.on('processing streaming', function (idx, val) {
-  //   console.log(val.length)
-  //   socket.emit('display streaming', idx, val)
-  //   socket.broadcast.emit('display streaming', idx, val)
-  // });
-  //
-  // socket.on('end streaming', function (data) {
-  //   socket.emit('stop streaming', data)
-  //   socket.broadcast.emit('transfer streaming', data)
-  // });
-
 });
 
 app.listen(8090);
